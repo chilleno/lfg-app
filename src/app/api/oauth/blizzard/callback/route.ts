@@ -1,7 +1,8 @@
-import { NextApiRequest } from 'next';
 import { NextRequest, NextResponse } from 'next/server';
+import { cookies } from 'next/headers'
 
 const handler = async (req: NextRequest) => {
+    const cookieStore = cookies()
     const code = req.nextUrl.searchParams.get('code') as string;
     const CLIENT_SECRET = process.env.CLIENT_SECRET;
     const CLIENT_ID = process.env.CLIENT_ID;
@@ -29,9 +30,7 @@ const handler = async (req: NextRequest) => {
         body: params,
         headers
     };
-    console.log(requestOptions);
-    console.log(TOKEN_ENDPOINT);
-    
+
     const oauthResponse = await fetch(TOKEN_ENDPOINT, requestOptions);
 
     // handle errors
@@ -43,16 +42,13 @@ const handler = async (req: NextRequest) => {
     // work with the oauth response
     const responseData = await oauthResponse.json();
 
-    // do something with the `access_token` from `responseData`
-    // {
-    //     "access_token": "123456789",
-    //     "token_type": "bearer",
-    //     "expires_in": 86399,
-    //     "scope": "wow.profile"
-    // }
+    cookies().set('access_token', responseData.access_token)
+    cookies().set('token_type', responseData.token_type)
+    cookies().set('expires_in', responseData.expires_in)
+    cookies().set('scope', responseData.scope)
 
     // send a JSON response (just an example)
     return new NextResponse(JSON.stringify(responseData));
 }
 
-export { handler as GET}
+export { handler as GET }
