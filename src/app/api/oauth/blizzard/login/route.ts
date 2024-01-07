@@ -1,4 +1,3 @@
-import { NextApiResponse } from "next"
 import { redirect } from 'next/navigation'
 
 const handler = async (res: any, req: Request) => {
@@ -11,7 +10,6 @@ const handler = async (res: any, req: Request) => {
     const scopesString = encodeURIComponent(scopes);
     const redirectUriString = encodeURIComponent(redirectUri);
     const authorizeUrl = `${AUTHORIZE_ENDPOINT}?client_id=${CLIENT_ID}&scope=${scopesString}&state=${STATE}&redirect_uri=${redirectUriString}&response_type=code`;
-    console.log(authorizeUrl);
     redirect(authorizeUrl);
 }
 
